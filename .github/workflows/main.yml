@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'main'
 
 on:
   push:
@@ -7,15 +7,14 @@ on:
   pull_request:
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  main:
+    name: 'main'
     runs-on: ubuntu-latest
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform
 
     steps:
     # Checkout the repository to the GitHub Actions runner
@@ -26,20 +25,37 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
+    # Install NPM/yarn
+    - uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+    # Install dependencies
+    - name: Yarn Install
+      run: cd idnmd && yarn install
+
+    # Test Application
+    - name: Yarn Test
+      run: cd idnmd && yarn test
+
+    # Build Application
+    - name: Yarn Build
+      run: cd idnmd && yarn build
+
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
-      run: terraform init
+      run: cd terraform && terraform init
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
-      run: terraform fmt -check
+      run: cd terraform && terraform fmt -check
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan
+      run: cd terraform && terraform plan
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -48,4 +64,4 @@ jobs:
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve
+      run: cd terraform && terraform apply -auto-approve
