@@ -20,6 +20,10 @@ jobs:
 
     steps:
 
+    - name: Only allow apollorion to commment for these actions
+      if: github.event_name == 'issue_comment' && github.actor != 'apollorion'
+      run: fail
+
     - name: Check allowed comment
       if: github.event_name == 'issue_comment' && !startsWith(github.event.comment.body, '/stage')
       run: fail
