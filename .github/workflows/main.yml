@@ -58,6 +58,9 @@ jobs:
       # Use staging workspace
       - name: Terraform Workspace Stage
         run: cd terraform && terraform workspace select staging
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # Checks that all Terraform configuration files adhere to a canonical format
       - name: Terraform Format
@@ -128,6 +131,9 @@ jobs:
     # Use production workspace
     - name: Terraform Workspace Production
       run: cd terraform && terraform workspace select production
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
