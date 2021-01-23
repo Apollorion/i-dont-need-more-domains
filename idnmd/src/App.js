@@ -12,7 +12,7 @@ function App() {
         <img src={getImage()} className="App-logo" alt="meme" />
         <div>
           {Object.keys(images).map((image, index) => {
-              return <span className={"link"} key={index}><a href={`http://${image}.${domainDetails.tld}.io`}>{image}</a> {index === Object.keys(images).length -1 ? "" : " | "} </span>
+              return <span className={"link"} key={index}><a href={`http://${image}.${domainDetails.tld}`}>{image}</a> {index === Object.keys(images).length -1 ? "" : " | "} </span>
           })}
         </div>
           <br/>
@@ -24,9 +24,15 @@ function App() {
 
 function getDomainDetails(){
     const domain = window.location.host.split(".");
+
+    let subdomain = "root";
+    if(domain.length > 2 && domain[0] !== "www" && domain[0] !== "stage"){
+        subdomain = domain[0];
+    }
+
     return {
-        "subdomain": domain.length > 2 && domain[0] !== "www" ? domain[0] : "root",
-        "tld": domain.length > 2 ? domain[1] : domain[0]
+        "subdomain": subdomain,
+        "tld": process.env.TLD ? process.env.TLD : "i-dont-need-more-domains-dev.io:3000"
     };
 }
 
