@@ -5,6 +5,8 @@ on:
     branches:
     - main
   pull_request:
+  issue_comment:
+    types: [ created, deleted ]
 
 jobs:
   main:
@@ -17,6 +19,11 @@ jobs:
         shell: bash
 
     steps:
+
+    - name: Check allowed comment
+      if: github.event_name == 'issue_comment' && !startsWith(github.event.comment.body, '/stage')
+      run: fail
+
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
