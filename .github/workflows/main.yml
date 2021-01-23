@@ -53,9 +53,6 @@ jobs:
         with:
           node-version: '14'
 
-      # Install AWS CLI
-      - uses: chrislennon/action-aws-cli@v1.1
-
       # Install dependencies
       - name: Yarn Install
         run: cd idnmd && yarn install
@@ -201,9 +198,6 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
-
-      # Install AWS CLI
-      - uses: chrislennon/action-aws-cli@v1.1
 
       # Install dependencies
       - name: Yarn Install
