@@ -1,6 +1,6 @@
-#IDNMD
+# IDNMD
 
-<p align="center">This application is MISSION CRITICAL! Lets keep this badge green, folks.<br><img src="https://github.com/Apollorion/i-dont-need-more-domains/workflows/main/badge.svg"/></p>
+<p align="center">This application is MISSION CRITICAL!<br>Lets keep this badge green, folks.<br><img src="https://github.com/Apollorion/i-dont-need-more-domains/workflows/main/badge.svg"/></p>
 
 ### About This Project
 
