@@ -16,7 +16,7 @@ function App() {
           })}
         </div>
           <br/>
-          <a href={"https://github.com/Apollorion/i-dont-need-more-domains"}><img src={github} /></a>
+          <a href={"https://github.com/Apollorion/i-dont-need-more-domains"}><img src={github} alt={"github"} /></a>
       </header>
     </div>
   );
