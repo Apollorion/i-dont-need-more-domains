@@ -1,8 +1,9 @@
 import './App.css';
 import github from "./github.png";
-const images = importAllImages(require.context('./memes', false, /\.(png|jpe?g|svg)$/));
 const domainDetails = getDomainDetails();
-console.log(domainDetails);
+
+//TODO: this is a hacky work around because require.context is not available in jest. We should do this differently. Works for now though....
+const images = process.env.ENVIRONMENT !== "test" ? importAllImages(require.context('./memes', false, /\.(png|jpe?g|svg)$/)) : {};
 
 function App() {
   return (
@@ -23,7 +24,6 @@ function App() {
 
 function getDomainDetails(){
     const domain = window.location.host.split(".");
-    console.log(domain);
     return {
         "subdomain": domain.length > 2 && domain[0] !== "www" ? domain[0] : "root",
         "tld": domain.length > 2 ? domain[1] : domain[0]
