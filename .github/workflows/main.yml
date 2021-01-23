@@ -9,9 +9,11 @@ on:
     types: [ created, deleted ]
 
 jobs:
-  main:
-    name: 'main'
+
+  comment:
+    name: 'comment'
     runs-on: ubuntu-latest
+    if: github.event_name == 'issue_comment' && github.actor == 'apollorion' && startsWith(github.event.comment.body, '/stage')
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -19,14 +21,75 @@ jobs:
         shell: bash
 
     steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Only allow apollorion to commment for these actions
-      if: github.event_name == 'issue_comment' && github.actor != 'apollorion'
-      run: fail
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
 
-    - name: Check allowed comment
-      if: github.event_name == 'issue_comment' && !startsWith(github.event.comment.body, '/stage')
-      run: fail
+      # Install NPM/yarn
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      # Install dependencies
+      - name: Yarn Install
+        run: cd idnmd && yarn install
+
+      # Test Application
+      - name: Yarn Test
+        run: cd idnmd && yarn test
+        env:
+          ENVIRONMENT: "test"
+
+      # Build Application
+      - name: Yarn Build
+        run: cd idnmd && yarn build
+
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform Init
+        run: cd terraform && terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # Use staging workspace
+      - name: Terraform Workspace Stage
+        run: cd terraform && terraform workspace select staging
+
+      # Checks that all Terraform configuration files adhere to a canonical format
+      - name: Terraform Format
+        run: cd terraform && terraform fmt -check
+
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        run: cd terraform && terraform plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+        # On push to main, build or change infrastructure according to Terraform configuration files
+        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+      - name: Terraform Apply
+        run: cd terraform && terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+
+  PR:
+    name: 'PR'
+    runs-on: ubuntu-latest
+    if: github.event_name != 'issue_comment'
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -62,6 +125,10 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+    # Use production workspace
+    - name: Terraform Workspace Production
+      run: cd terraform && terraform workspace select production
+
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run: cd terraform && terraform fmt -check
@@ -76,7 +143,7 @@ jobs:
       # On push to main, build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push')
       run: cd terraform && terraform apply -auto-approve
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
