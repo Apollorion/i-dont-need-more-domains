@@ -32,7 +32,7 @@ function getDomainDetails(){
 
     return {
         "subdomain": subdomain,
-        "tld": process.env.TLD ? process.env.TLD : "i-dont-need-more-domains-dev.io:3000"
+        "tld": process.env.REACT_APP_TLD ? process.env.REACT_APP_TLD : "i-dont-need-more-domains-dev.io:3000"
     };
 }
 
