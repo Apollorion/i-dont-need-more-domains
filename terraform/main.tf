@@ -11,10 +11,10 @@ terraform {
 }
 
 locals {
-  prod_tld = "i-dont-need-more-domains.io"
+  prod_tld  = "i-dont-need-more-domains.io"
   prod_cert = "arn:aws:acm:us-east-1:874575230586:certificate/52276146-910e-4e5c-947c-3c02a36b5444"
 
-  stage_tld = "stage.i-dont-need-more-domains.io"
+  stage_tld  = "stage.i-dont-need-more-domains.io"
   stage_cert = "arn:aws:acm:us-east-1:874575230586:certificate/e414cda4-1c68-4c6c-8f10-06ab396e8546"
 
   tld           = terraform.workspace == "production" ? local.prod_tld : local.stage_tld
