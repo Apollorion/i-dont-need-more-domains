@@ -65,7 +65,7 @@ jobs:
 
       # Build Application
       - name: Yarn Build
-        run: cd idnmd && yarn build
+        run: cd idnmd && TLD="stage.i-dont-need-more-domains.io" yarn build
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
@@ -141,7 +141,7 @@ jobs:
 
     # Build Application
     - name: Yarn Build
-      run: cd idnmd && yarn build
+      run: cd idnmd && TLD="i-dont-need-more-domains.io" yarn build
 
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
@@ -205,7 +205,7 @@ jobs:
 
       # Build Application
       - name: Yarn Build
-        run: cd idnmd && yarn build
+        run: cd idnmd && TLD="i-dont-need-more-domains.io" yarn build
 
       # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
       - name: Terraform Init
