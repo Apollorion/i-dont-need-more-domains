@@ -1,5 +1,5 @@
 data "aws_route53_zone" "idnmd" {
-  name = local.tld
+  name = local.prod_tld
 }
 
 module "cdn" {
