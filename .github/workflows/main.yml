@@ -1,10 +1,10 @@
 name: 'main'
 
 on:
-  pull_request_target:
+  push:
     branches:
     - main
-  pull_request:
+  pull_request_target:
   issue_comment:
     types: [ created, deleted ]
 
@@ -115,8 +115,16 @@ jobs:
 
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
+      if: github.event_name == "push"
       uses: actions/checkout@v2
 
+    - name: Checkout
+      if: github.event_name != "push"
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.pull_request.head.sha }}
+        repository: ${{ github.event.pull_request.head.repo.full_name }}
+        
     # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
