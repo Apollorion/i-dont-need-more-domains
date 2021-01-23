@@ -11,7 +11,7 @@ terraform {
 }
 
 locals {
-  tld           = "i-dont-need-more-domains.io"
+  tld           = terraform.workspace == "production" ? "i-dont-need-more-domains.io" : "stage.i-dont-need-more-domains.io"
   acm_cert      = "arn:aws:acm:us-east-1:874575230586:certificate/52276146-910e-4e5c-947c-3c02a36b5444"
   images        = fileset("../idnmd/src/memes/", "*")
   website_files = tolist(fileset("../idnmd/build/", "**"))
