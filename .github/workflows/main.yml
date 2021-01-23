@@ -37,6 +37,8 @@ jobs:
     # Test Application
     - name: Yarn Test
       run: cd idnmd && yarn test
+      env:
+        ENVIRONMENT: "test"
 
     # Build Application
     - name: Yarn Build
