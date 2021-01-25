@@ -9,7 +9,7 @@ I purchase way too many domains for projects I never start. This project started
 Now that I think about it.... this readme will need a ton of work. Basically if you're here, you can open a PR and make this project even more ridiculous if you want. I won't stop you. I even setup automation so everything deploys! Oh! And it's got a staging environment!
 
 ### Environments
-To prevent bad actors, only I can deploy your PR to staging with `/stage`, but if you ask me I'll probably do it for you.
+To prevent bad actors, only I can deploy your PR to staging with the label `safe-to-stage`, but if you ask me I'll probably do it for you.
 
 production: https://i-dont-need-more-domains.io  
 staging: https://stage.i-dont-need-more-domains.io

@@ -4,16 +4,15 @@ on:
   push:
     branches:
     - main
-  pull_request_target:
-  issue_comment:
-    types: [ created, deleted ]
+  label:
+    types: [created]
 
 jobs:
 
-  comment:
-    name: 'comment'
+  stage:
+    name: 'stage'
     runs-on: ubuntu-latest
-    if: github.event_name == 'issue_comment' && github.actor == 'apollorion' && startsWith(github.event.comment.body, '/stage')
+    if: contains( github.event.pull_request.labels.*.name, 'safe-to-stage')
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -110,7 +109,7 @@ jobs:
   PR:
     name: 'PR'
     runs-on: ubuntu-latest
-    if: github.event_name != 'issue_comment' && github.event_name != 'push'
+    if: contains( github.event.pull_request.labels.*.name, 'safe-to-test')
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -177,7 +176,7 @@ jobs:
   push:
     name: 'push'
     runs-on: ubuntu-latest
-    if: github.event_name != 'issue_comment' && github.event_name == 'push'
+    if: github.event_name == 'push'
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
