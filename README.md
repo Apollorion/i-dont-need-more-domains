@@ -12,7 +12,7 @@ Now that I think about it.... this readme will need a ton of work. Basically if 
 To prevent bad actors, only I can deploy your PR to staging with the label `safe-to-stage`, but if you ask me I'll probably do it for you.
 
 production: https://i-dont-need-more-domains.io  
-staging: https://stage.i-dont-need-more-domains.io
+staging: https://stage.i-dont-need-more-domains.io 
 
 ### TODO
 Theres a few things I still would like to see done here:
