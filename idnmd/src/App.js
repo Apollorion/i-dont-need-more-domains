@@ -26,10 +26,10 @@ function getDomainDetails(){
     const domain = window.location.host.split(".");
 
     let subdomain = "root";
-    let tld = domain[0];
+    let tld = domain[0] + "." + domain[1];
     if(domain.length > 2 && domain[0] !== "www" && domain[0] !== "stage"){
         subdomain = domain[0];
-        tld = domain[1]
+        tld = domain[1] + "." + domain[2]
     }
 
     return {
