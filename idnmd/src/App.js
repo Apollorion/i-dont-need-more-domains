@@ -46,8 +46,6 @@ function getDomainDetails(){
 
 // Determines which image to show based off subdomain.
 function getImage(){
-    console.log("DOMAIN_DETAILS", domainDetails);
-    console.log("IMAGES", images)
     if(domainDetails.subdomain !== "root" && domainDetails.subdomain !== "www"){
         // Show current subdomains image
         return images[domainDetails.subdomain];
@@ -61,9 +59,6 @@ function getImage(){
 function importAllImages(r) {
     let keys = r.keys().map(x => x.split(".")[1].substring(1));
     let values = r.keys().map(r);
-
-    console.log("KEYS", keys);
-    console.log("VALUES", values)
 
     let rv = {};
     for(let i in keys){
