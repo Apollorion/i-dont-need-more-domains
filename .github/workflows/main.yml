@@ -31,10 +31,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
 
-      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-
       # Install NPM/yarn
       - uses: actions/setup-node@v2
         with:
@@ -49,42 +45,6 @@ jobs:
         run: cd idnmd && yarn test
         env:
           ENVIRONMENT: "test"
-
-      # Build Application
-      - name: Yarn Build
-        run: cd idnmd && REACT_APP_TLD="stage.i-dont-need-more-domains.io" yarn build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: "us-east-1"
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: "idnmd-staging"
-          role-duration-seconds: 900
-
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
-        run: cd terraform && terraform init
-
-      # Use staging workspace
-      - name: Terraform Workspace Stage
-        run: cd terraform && terraform workspace select staging
-
-      # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
-        run: cd terraform && terraform fmt -check
-
-      # Generates an execution plan for Terraform
-      - name: Terraform Plan
-        run: cd terraform && terraform plan
-
-        # On push to main, build or change infrastructure according to Terraform configuration files
-        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-      - name: Terraform Apply
-        run: cd terraform && terraform apply -auto-approve
-
-      # Create Cloudfront invalidation
-      - run: aws cloudfront create-invalidation --distribution-id E11EQGN2YVT444 --paths "/*"
 
   push:
     name: 'push'
@@ -102,10 +62,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-
       # Install NPM/yarn
       - uses: actions/setup-node@v2
         with:
@@ -120,42 +76,3 @@ jobs:
         run: cd idnmd && yarn test
         env:
           ENVIRONMENT: "test"
-
-      # Build Application
-      - name: Yarn Build
-        run: cd idnmd && REACT_APP_TLD="i-dont-need-more-domains.io" yarn build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-region: "us-east-1"
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          role-session-name: "idnmd-prod"
-          role-duration-seconds: 900
-
-      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-      - name: Terraform Init
-        run: cd terraform && terraform init
-
-      # Use production workspace
-      - name: Terraform Workspace Production
-        run: cd terraform && terraform workspace select production
-
-      # Checks that all Terraform configuration files adhere to a canonical format
-      - name: Terraform Format
-        run: cd terraform && terraform fmt -check
-
-      # Generates an execution plan for Terraform
-      - name: Terraform Plan
-        run: cd terraform && terraform plan
-
-        # On push to main, build or change infrastructure according to Terraform configuration files
-        # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        run: cd terraform && terraform apply -auto-approve
-
-      # Create Cloudfront invalidation
-      - run: aws cloudfront create-invalidation --distribution-id E32KLYQIQANAYH --paths "/*"
-        if: github.ref == 'refs/heads/main'
-
