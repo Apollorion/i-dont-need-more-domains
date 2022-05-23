@@ -12,7 +12,7 @@ function App() {
         <img src={getImage()} className="App-logo" alt="meme" />
         <div>
           {Object.keys(images).map((image, index) => {
-              return <span className={"link"} key={index}><a href={`http://${image}.${domainDetails.tld}`}>{image}</a> {index === Object.keys(images).length -1 ? "" : " | "} </span>
+              return <span className={"link"} key={index}><a href={`https://${image}.${domainDetails.tld}`}>{image}</a> {index === Object.keys(images).length -1 ? "" : " | "} </span>
           })}
         </div>
           <br/>
@@ -54,7 +54,7 @@ function importAllImages(r) {
 
     let rv = {};
     for(let i in keys){
-        rv[keys[i]] = values[i].default;
+        rv[keys[i]] = values[i];
     }
     return rv;
 }
