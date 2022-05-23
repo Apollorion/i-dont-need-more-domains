@@ -32,6 +32,12 @@ function getDomainDetails(){
         tld = domain[1] + "." + domain[2]
     }
 
+    if(process.env.REACT_APP_CF_PAGES_PREVIEW){
+        const branch = process.env.REACT_APP_CF_PAGES_BRANCH
+        subdomain = "root"
+        tld = branch + ".i-dont-need-more-domains.pages.dev"
+    }
+
     return {
         subdomain,
         tld
@@ -41,6 +47,7 @@ function getDomainDetails(){
 // Determines which image to show based off subdomain.
 function getImage(){
     console.log("DOMAIN_DETAILS", domainDetails);
+    console.log("IMAGES", images)
     if(domainDetails.subdomain !== "root" && domainDetails.subdomain !== "www"){
         // Show current subdomains image
         return images[domainDetails.subdomain];
@@ -60,7 +67,7 @@ function importAllImages(r) {
 
     let rv = {};
     for(let i in keys){
-        rv[keys[i]] = values[i];
+        rv[keys[i]] = values[i].default;
     }
     return rv;
 }
